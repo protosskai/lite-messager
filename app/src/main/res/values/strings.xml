@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">lite-messager</string>
+    <string name="rules">Rules</string>
+    <string name="about">About</string>
+    <string name="page_title">Lite Messager</string>
+    <string name="main">主界面</string>
+    <string name="settings">设置</string>
 </resources>
