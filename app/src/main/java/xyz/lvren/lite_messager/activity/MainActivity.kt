@@ -1,8 +1,8 @@
 package xyz.lvren.lite_messager.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -10,10 +10,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.onNavDestinationSelected
-import xyz.lvren.lite_messager.MyApplication
 import xyz.lvren.lite_messager.R
 import xyz.lvren.lite_messager.databinding.ActivityMainBinding
-import java.io.IOException
+import xyz.lvren.lite_messager.service.HttpService
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val TAG = "xyz.lvren.lite_messager.activity.MainActivity"
 
-    private val httpServer = xyz.lvren.lite_messager.http.HttpServer(MyApplication.context, 8080)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding =
@@ -32,15 +31,14 @@ class MainActivity : AppCompatActivity() {
             AppBarConfiguration(setOf(R.id.mainFragment, R.id.settingFragment), drawerLayout)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         NavigationUI.setupWithNavController(binding.navView, navController)
-        Log.d(TAG, "服务启动中")
-        try {
-            httpServer.start()
-            // TODO: 开启一个websocket服务器，接受消息
-            Log.d(TAG, "服务启动完成")
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.d(TAG, "服务启动错误")
-        }
+        initHttpService()
+
+    }
+
+    // 启动http服务
+    private fun initHttpService() {
+        val startIntent = Intent(this, HttpService::class.java)
+        startService(startIntent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -55,7 +53,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        httpServer.stop()
+        val stopIntent = Intent(this, HttpService::class.java)
+        stopService(stopIntent)
     }
 
 
