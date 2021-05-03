@@ -35,7 +35,7 @@ class FileUpload(val context: Context) {
     }
 
     // 处理分片文件的上传
-    fun upload(fileName: String, data: ByteArray, number: Int, onFinished: (String) -> Unit) {
+    fun upload(fileName: String, data: ByteArray, number: Int, onFinished: (FileInfo) -> Unit) {
         if (!isWritable)
             return
         val fileInfo = taskMap[fileName] ?: return
@@ -49,7 +49,7 @@ class FileUpload(val context: Context) {
         if (checkFinished(fileName)) {
             mergeSlice(fileName)
             cleanTmpFile(fileName)
-            onFinished(fileName)
+            onFinished(fileInfo)
         }
     }
 

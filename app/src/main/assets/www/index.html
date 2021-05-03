@@ -54,7 +54,10 @@
                     <!-- <a id="submit" href="#" class="btn btn-lg btn-default">Send</a> -->
                     <button id="open" type="button" class="btn btn-default">open</button>
                 </p>
-                <div id="progress"></div>
+                <div id="progress" class="lead"></div>
+                <div class="lead" id="completePromot">
+                    <p>传输完毕！</p>
+                </div>
             </div>
 
             <div class="mastfoot">
@@ -79,6 +82,8 @@
 <script>
         var progressBar = null;
         var total = null;
+        var completeFlag = false;
+        $("#completePromot").hide();
         if (window.FileList && window.File && window.FileReader) {
             document.getElementById('file-selector').addEventListener('change', event => {
                 const file = event.target.files[0];
@@ -104,6 +109,10 @@
                 }
             }
             progressBar.update(0, chunkQuantity, completeSliceNumber);
+            if(completeSliceNumber == chunkQuantity && !completeFlag){
+                $("#completePromot").show();
+                completeFlag = true;
+            }
         }
 
         function failCallback(sliceNumber, chunkQuantity) {

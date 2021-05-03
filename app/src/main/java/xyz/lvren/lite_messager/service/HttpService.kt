@@ -21,17 +21,6 @@ class HttpService : Service() {
     override fun onCreate() {
         super.onCreate()
         httpServer = HttpServer(MyApplication.context, 8888)
-//        val intent = Intent(this, MainActivity::class.java)
-//        val pi = PendingIntent.getActivity(this, 0, intent, 0)
-//        val notification = Notification.Builder(this, CHANNEL_DEFAULT_IMPORTANCE)
-//            .setContentTitle("Web服务")
-//            .setContentText("Web服务正在运行")
-//            .setWhen(System.currentTimeMillis())
-//            .setSmallIcon(R.mipmap.ic_launcher)
-//            .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-//            .setContentIntent(pi)
-//            .build()
-//        startForeground(1, notification)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

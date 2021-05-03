@@ -9,9 +9,7 @@ import org.nanohttpd.protocols.http.response.Response.newChunkedResponse
 import org.nanohttpd.protocols.http.response.Response.newFixedLengthResponse
 import org.nanohttpd.protocols.http.response.Status
 import xyz.lvren.lite_messager.MyApplication
-import xyz.lvren.lite_messager.entity.DataSource
-import xyz.lvren.lite_messager.entity.FileInfo
-import xyz.lvren.lite_messager.entity.Message
+import xyz.lvren.lite_messager.entity.*
 import java.util.*
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
@@ -82,7 +80,7 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
         val params = session.parms
         val message = params["message"]
         if (message != null) {
-            DataSource.messages.add(Message(message))
+            DataSource.messages.add(TextMessage(message))
             println("添加了：${message}")
         }
         return newFixedLengthResponse("hello")
@@ -129,7 +127,7 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
                 fileName as String,
                 data as ByteArray,
                 (number as String).toInt(),
-                this::callback
+                this::onFinished
             )
             return newFixedLengthResponse("success")
         } catch (e: java.lang.Exception) {
@@ -138,9 +136,10 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
         }
     }
 
-    fun callback(fileName: String) {
+    fun onFinished(fileInfo: FileInfo) {
         // 回调函数
-
+        val message = "文件：${fileInfo.fileName}"
+        DataSource.messages.add(FileMessage(message, fileInfo))
     }
 
 }
