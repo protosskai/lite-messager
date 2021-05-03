@@ -6,11 +6,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/testBtn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="这是settingFragment"
-            android:textSize="50sp" />
+            android:text="测试" />
 
     </LinearLayout>
 </layout>

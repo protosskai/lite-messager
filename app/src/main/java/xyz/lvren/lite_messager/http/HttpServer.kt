@@ -1,12 +1,14 @@
 package xyz.lvren.lite_messager.http
 
 import android.content.Context
+import android.widget.Toast
 import org.nanohttpd.protocols.http.IHTTPSession
 import org.nanohttpd.protocols.http.NanoHTTPD
 import org.nanohttpd.protocols.http.response.Response
 import org.nanohttpd.protocols.http.response.Response.newChunkedResponse
 import org.nanohttpd.protocols.http.response.Response.newFixedLengthResponse
 import org.nanohttpd.protocols.http.response.Status
+import xyz.lvren.lite_messager.MyApplication
 import xyz.lvren.lite_messager.entity.DataSource
 import xyz.lvren.lite_messager.entity.FileInfo
 import xyz.lvren.lite_messager.entity.Message
@@ -87,6 +89,10 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
     }
 
     private fun startFileUpload(session: IHTTPSession): Response {
+        if (!fileUpload.isWritable) {
+            Toast.makeText(MyApplication.context, "获取不到设备存储，无法传输文件！", Toast.LENGTH_SHORT).show()
+            return newFixedLengthResponse("error")
+        }
         try {
             val map = HashMap<String, Any>()
             session.getBody(map)
@@ -109,26 +115,22 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
     }
 
     private fun fileUpload(session: IHTTPSession): Response {
-//        val map = HashMap<String, Any>()
-//        session.getBody(map)
-//        val data = session.rawParams["data"]
-//        val number = session.rawParams["sliceNumber"]
-//        if (data != null && number != null) {
-//            if (data is ByteArray && number is String) {
-//                val outputStream = context.openFileOutput(number, Context.MODE_PRIVATE)
-//                outputStream.write(data)
-//            }
-//        } else {
-//            return newFixedLengthResponse("error")
-//        }
-//        return newFixedLengthResponse("fileUpload")
+        if (!fileUpload.isWritable) {
+            Toast.makeText(MyApplication.context, "获取不到设备存储，无法传输文件！", Toast.LENGTH_SHORT).show()
+            return newFixedLengthResponse("error")
+        }
         try {
             val map = HashMap<String, Any>()
             session.getBody(map)
             val fileName = session.rawParams["fileName"] ?: return newFixedLengthResponse("error")
             val data = session.rawParams["data"] ?: return newFixedLengthResponse("error")
             val number = session.rawParams["sliceNumber"] ?: return newFixedLengthResponse("error")
-            fileUpload.upload(fileName as String, data as ByteArray, (number as String).toInt())
+            fileUpload.upload(
+                fileName as String,
+                data as ByteArray,
+                (number as String).toInt(),
+                this::onFinished
+            )
             return newFixedLengthResponse("success")
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -136,5 +138,9 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
         }
     }
 
+    fun onFinished(fileName: String) {
+        // 移动文件
+
+    }
 
 }
