@@ -129,7 +129,7 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
                 fileName as String,
                 data as ByteArray,
                 (number as String).toInt(),
-                this::onFinished
+                this::callback
             )
             return newFixedLengthResponse("success")
         } catch (e: java.lang.Exception) {
@@ -138,8 +138,8 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
         }
     }
 
-    fun onFinished(fileName: String) {
-        // 移动文件
+    fun callback(fileName: String) {
+        // 回调函数
 
     }
 
