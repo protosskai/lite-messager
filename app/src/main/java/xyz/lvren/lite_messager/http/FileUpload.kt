@@ -72,9 +72,13 @@ class FileUpload(val context: Context) {
                 val tmpInput =
                     BufferedInputStream(FileInputStream(File(context.cacheDir, "${fileName}-${i}")))
                 val byteArray = ByteArray(1024)
-                while (tmpInput.read(byteArray) > 0) {
-                    outFile?.write(byteArray)
-                }
+                var readNumber: Int
+                do {
+                    readNumber = tmpInput.read(byteArray)
+                    if (readNumber > 0) {
+                        outFile?.write(byteArray, 0, readNumber)
+                    }
+                } while (readNumber > 0)
                 tmpInput.close()
             }
             outFile?.close()
@@ -100,7 +104,8 @@ class FileUpload(val context: Context) {
         return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
     }
 
-    fun getPrimaryExternalStorage(): File {
+    // 获取外部存储空间APP可访问的文件夹
+    private fun getPrimaryExternalStorage(): File {
         val externalStorageVolumes: Array<out File> =
             ContextCompat.getExternalFilesDirs(context, null)
         return if (externalStorageVolumes.isNotEmpty()) {
@@ -111,6 +116,7 @@ class FileUpload(val context: Context) {
         }
     }
 
+    // 在Download目录下创建文件并返回输出流
     @RequiresApi(Build.VERSION_CODES.Q)
     fun insertFileIntoDownload(
         fileName: String,
@@ -132,4 +138,6 @@ class FileUpload(val context: Context) {
         }
         return null
     }
+
+
 }

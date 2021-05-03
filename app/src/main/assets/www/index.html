@@ -80,7 +80,7 @@
             document.getElementById('file-selector').addEventListener('change', event => {
                 const file = event.target.files[0];
                 sendStartRequest(file, "/startFileUpload")
-                asyncSendFile(file, "/fileUpload")
+                asyncSendFile(file, "/fileUpload", successCallback, failCallback)
             });
         }
     </script>
