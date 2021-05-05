@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textview.MaterialTextView
 import xyz.lvren.lite_messager.R
+import xyz.lvren.lite_messager.entity.FileMessage
 import xyz.lvren.lite_messager.entity.Message
+import xyz.lvren.lite_messager.entity.TextMessage
 
 class MessageRecyclerViewAdapter(private val messageList: List<Message>) :
     RecyclerView.Adapter<MessageViewHolder>() {
@@ -21,6 +24,22 @@ class MessageRecyclerViewAdapter(private val messageList: List<Message>) :
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val messageItem = messageList[position]
         holder.messageText.text = messageItem.message
+        if (messageItem is TextMessage) {
+            holder.messageText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_text_24,
+                0,
+                0,
+                0
+            )
+        } else if (messageItem is FileMessage) {
+            holder.messageText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_file_24,
+                0,
+                0,
+                0
+            )
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -31,7 +50,7 @@ class MessageRecyclerViewAdapter(private val messageList: List<Message>) :
 
 
 class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    var messageText: TextView = itemView.findViewById(R.id.messageText)
+    var messageText: MaterialTextView = itemView.findViewById(R.id.messageText)
 }
 
 class MessageItemDecoration(private val largePadding: Int, private val smallPadding: Int) :

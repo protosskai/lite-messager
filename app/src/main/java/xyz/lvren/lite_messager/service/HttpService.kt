@@ -15,8 +15,6 @@ class HttpService : Service() {
 
     private lateinit var httpServer: HttpServer
     private val TAG = "xyz.lvren.lite_messager.service.HttpService"
-    private val ID = "xyz.lvren.lite_messager.service"
-    private val NAME = "Channel One"
 
     override fun onCreate() {
         super.onCreate()
