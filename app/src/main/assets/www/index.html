@@ -20,6 +20,7 @@
     <link href="./css/cover.css" rel="stylesheet">
     <script src="./js/jquery.min.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/fileUpload.js"></script>
 
 </head>
 
@@ -46,13 +47,14 @@
                 <input type="file" id="file-selector">
 
                 <p class="lead">
-                    <!-- <a id="submit" href="#" class="btn btn-lg btn-default">Send</a> -->
-                    <button id="submit" type="button" class="btn btn-default">Send</button>
+                    <button id="submit" type="button" class="btn btn-default">发送</button>
                 </p>
 
                 <p class="lead">
-                    <!-- <a id="submit" href="#" class="btn btn-lg btn-default">Send</a> -->
-                    <button id="open" type="button" class="btn btn-default">open</button>
+                    <button id="pause" type="button" class="btn btn-default">暂停</button>
+                </p>
+                <p class="lead">
+                    <button id="resume" type="button" class="btn btn-default">继续</button>
                 </p>
                 <div id="progress" class="lead"></div>
                 <div class="lead" id="completePromot">
@@ -86,9 +88,16 @@
         $("#completePromot").hide();
         if (window.FileList && window.File && window.FileReader) {
             document.getElementById('file-selector').addEventListener('change', event => {
+                $("#completePromot").hide();
                 const file = event.target.files[0];
-                sendStartRequest(file, "/startFileUpload")
-                asyncSendFile(file, "/fileUpload", before, successCallback, failCallback)
+                let fileUpload = new FileUpload(file, before, successCallback, failCallback)
+                $("#pause").click(function () {
+                    fileUpload.pause()
+                })
+                $("#resume").click(function () {
+                    fileUpload.resume()
+                })
+                fileUpload.start()
             });
         }
         function before(totalSize, chunkQuantity) {
@@ -109,7 +118,7 @@
                 }
             }
             progressBar.update(0, chunkQuantity, completeSliceNumber);
-            if(completeSliceNumber == chunkQuantity && !completeFlag){
+            if (completeSliceNumber == chunkQuantity && !completeFlag) {
                 $("#completePromot").show();
                 completeFlag = true;
             }
