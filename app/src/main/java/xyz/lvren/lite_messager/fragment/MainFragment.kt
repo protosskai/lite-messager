@@ -19,13 +19,14 @@ import xyz.lvren.lite_messager.adapter.MessageRecyclerViewAdapter
 import xyz.lvren.lite_messager.adapter.RecyclerItemClickListener
 import xyz.lvren.lite_messager.databinding.FragmentMainBinding
 import xyz.lvren.lite_messager.entity.DataSource
+import xyz.lvren.lite_messager.util.NetWorkUtil
 import java.util.*
 
 
 class MainFragment : Fragment() {
     private val TAG = "xyz.lvren.lite_messager.fragment.MainFragment"
     private lateinit var binding: FragmentMainBinding
-
+    private val networkUtil = NetWorkUtil(MyApplication.context)
     private val messageList = DataSource.messages
     private val adapter = MessageRecyclerViewAdapter(messageList)
     private val timer = Timer()
@@ -79,6 +80,14 @@ class MainFragment : Fragment() {
                     smallPadding
                 )
             )
+            var networkStateStr = if (networkUtil.getWifiConnected()) {
+                val ip = networkUtil.getLocalV4Address()?.toString()?.trim('/') ?: ""
+                val port = "8888"
+                "请连接到：http://${ip}:${port} 来使用"
+            } else {
+                "请检查你的WiFi连接！"
+            }
+            networkState.text = networkStateStr
         }
     }
 
@@ -87,6 +96,9 @@ class MainFragment : Fragment() {
         val timerTask = object : TimerTask() {
             override fun run() {
                 activity?.runOnUiThread {
+                    if (DataSource.messages.size != 0) {
+                        binding.networkState.visibility = View.GONE
+                    }
                     adapter.notifyDataSetChanged()
                 }
             }
