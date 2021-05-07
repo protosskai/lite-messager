@@ -27,6 +27,7 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
     }
 
     override fun serve(session: IHTTPSession?): Response {
+        // TODO: 中文文件名乱码修复
         val uri = session!!.uri.removePrefix("/").ifEmpty { "index.html" }
         println("Loading $uri")
         try {
@@ -94,13 +95,14 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
         try {
             val map = HashMap<String, Any>()
             session.getBody(map)
-            val fileName = session.rawParams["fileName"] ?: return newFixedLengthResponse("error")
+            val fileName =
+                session.rawParams["fileName"] as? String ?: return newFixedLengthResponse("error")
             val size = session.rawParams["size"] ?: return newFixedLengthResponse("error")
             val sliceSize = session.rawParams["sliceSize"] ?: return newFixedLengthResponse("error")
             val sliceNumber =
                 session.rawParams["sliceNumber"] ?: return newFixedLengthResponse("error")
             val fileInfo = FileInfo(
-                fileName as String,
+                fileName,
                 (size as String).toInt(),
                 (sliceSize as String).toInt(),
                 (sliceNumber as String).toInt()

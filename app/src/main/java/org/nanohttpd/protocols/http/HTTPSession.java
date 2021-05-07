@@ -756,7 +756,7 @@ public class HTTPSession implements IHTTPSession {
                     if (boundary == null) {
                         throw new ResponseException(Status.BAD_REQUEST, "BAD REQUEST: Content type is multipart/form-data but boundary missing. Usage: GET /example/file.html");
                     }
-                    decodeMultipartFormData1(contentType, fbuf, this.raw_params, files);
+                    decodeMultipartFormDataToObject(contentType, fbuf, this.raw_params, files);
                 } else {
                     byte[] postBytes = new byte[fbuf.remaining()];
                     fbuf.get(postBytes);
@@ -780,7 +780,7 @@ public class HTTPSession implements IHTTPSession {
     }
 
 
-    private void decodeMultipartFormData1(ContentType contentType, ByteBuffer fbuf, Map<String, List<Object>> parms, Map<String, Object> files) throws ResponseException {
+    private void decodeMultipartFormDataToObject(ContentType contentType, ByteBuffer fbuf, Map<String, List<Object>> parms, Map<String, Object> files) throws ResponseException {
         int pcount = 0;
         try {
             int[] boundaryIdxs = getBoundaryPositions(fbuf, contentType.getBoundary().getBytes());
