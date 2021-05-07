@@ -27,7 +27,6 @@ class HttpServer(private val context: Context, private val port: Int) : NanoHTTP
     }
 
     override fun serve(session: IHTTPSession?): Response {
-        // TODO: 中文文件名乱码修复
         val uri = session!!.uri.removePrefix("/").ifEmpty { "index.html" }
         println("Loading $uri")
         try {
